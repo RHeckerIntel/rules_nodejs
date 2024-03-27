@@ -333,6 +333,21 @@ filegroup(
   name = "npm_files",
   srcs = {npm_files_glob}[":node_files"],
 )
+cc_library(
+  name = "headers",
+  hdrs = glob(
+    ["bin/nodejs/include/node/**"],
+    # Apparently, node.js doesn't ship the headers in their Windows package.
+    # https://stackoverflow.com/questions/50745670/nodejs-headers-on-windows-are-not-installed-automatically
+    # I see the same thing from downloading
+    # https://nodejs.org/dist/v18.17.1/node-v18.17.1-win-x64.zip
+    # and run
+    # unzip -t ~/Downloads/node-v18.17.1-win-x64.zip  | grep uv\\.h
+    # -> no results ...
+    allow_empty = True,
+  ),
+  includes = ["bin/nodejs/include/node"],
+)
 """.format(
         node_bin_export = "\n  \"%s\"," % node_bin,
         npm_bin_export = "\n  \"%s\"," % npm_bin,
@@ -355,6 +370,7 @@ node_toolchain(
     npm = ":npm",
     npm_files = [":npm_files"],
     run_npm = ":run_npm.template",
+    headers = ":headers",
 )
 """
     repository_ctx.file("BUILD.bazel", content = build_content)

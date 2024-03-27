@@ -1,6 +1,8 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("//nodejs/private:toolchains_repo.bzl", "PLATFORMS")
 load("//nodejs/private:user_build_settings.bzl", "user_args")
+load("//nodejs/private:current_node_cc_headers.bzl", "current_node_cc_headers")
+
 
 filegroup(
     name = "package_contents",
@@ -50,5 +52,10 @@ toolchain_type(
 user_args(
     name = "default_args",
     build_setting_default = "--preserve-symlinks",
+    visibility = ["//visibility:public"],
+)
+
+current_node_cc_headers(
+    name = "current_node_cc_headers",
     visibility = ["//visibility:public"],
 )
